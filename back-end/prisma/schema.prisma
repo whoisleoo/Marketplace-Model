@@ -13,3 +13,29 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id              String   @id @default(uuid()) // Comando padrão pra geração de ID em string aleatorio
+  email           String   @unique
+  senha           String
+  nome            String
+  sobrenome       String
+  role            Role     @default(CUSTOMER)
+  telefone        String?
+  cpf             String   @unique
+  endereco        String?
+  cidade          String?
+  cep             String?  @db.VarChar(9)
+  estado          String?  @db.VarChar(2) // Abreviação de estado.
+  emailVerificado Boolean  @default(false)
+  criado          DateTime @default(now())
+  atualizado      DateTime @updatedAt
+  status          Boolean  @default(true)
+
+  @@map("users")
+}
+
+enum Role {
+  ADMIN
+  CUSTOMER
+}
