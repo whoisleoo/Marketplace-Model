@@ -1,36 +1,35 @@
-`# Marketplace Model`
+# Marketplace Model
 
-`Um modelo de marketplace simples pra estudos e conhecimento próprio.`
+Um modelo de marketplace simples pra estudos e conhecimento próprio.
 
-`## Informações:`
+## Informações:
 
-`- **Frontend:** React + Vite`
-`- **Backend:** Node.js + Express`
-`- **Database:** PostgreSQL + Prisma ORM`
+- **Frontend:** React + Vite
+- **Backend:** Node.js + Express]
+- **Database:** PostgreSQL + Prisma ORM
 
-`## Instalação`
+## Instalação
 
-`### 1. Instalação do projeto`
+### 1. Instalação do projeto
 ````bash
 git clone https://github.com/whoisleoo/Marketplace-Model.git
 cd Marketplace-Model
 ````
 
-`### 2. Dependencias do Backend`
+### 2. Dependencias do Backend
 ````bash
 cd backend
 npm install
 ````
 
-`### 3. Dependencias do Frontend`
+### 3. Dependencias do Frontend
 ````bash
 cd frontend
 npm install
 ````
 
-`### 4. Configure o banco`
+### 4. Configure o banco
 ````bash
-# No diretório backend
 # Configure suas variáveis de ambiente no arquivo .env
 
 npx prisma migrate dev
@@ -38,8 +37,8 @@ npx prisma generate
 ````
 
 
-`**🚧 Projeto em desenvolvimento**`
+**🚧 Projeto em desenvolvimento**
 
-`Esse projeto está sendo criado para estudo de criação de websites`
+Esse projeto está sendo criado para estudo de criação de websites
 
-`---`
+---
