@@ -1,21 +1,23 @@
+import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import Home from './pages/Home'
 import { useState, useEffect } from 'react';
-import './App.css';
 import axios from 'axios';
 
 function App() {
 
-
-  const fetchAPI = async () => {
-    baseURL: 'http://localhost:9090/'
-    
-  }
-
   return (
-    <>
-    <div>
-      <h1>Se você tá vendo isso então funcionou parabéns</h1>
+     <Router>
+      <div className="min-h-screen bg-gray-100">
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="*" element={<div className="text-center py-8">Página não encontrada</div>} />
+        </Routes>
+        <Footer />
       </div>
-    </>
+    </Router>
   )
 }
 

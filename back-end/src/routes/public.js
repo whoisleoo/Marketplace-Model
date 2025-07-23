@@ -4,10 +4,16 @@ const router = express.Router()
 
 // Requisição de cadastro
 
-router.post('/cadastro', (req, res) =>{
-    const user = req.body
+router.get('/register', (req, res) =>{
+    res.json([{title: "Rota de cadastro"}, {status: "🟢 Funcionando"}])
 
-    res.status(201).json(user);
+    res.status(201)
+})
+
+router.get('/login', (req, res) =>{
+    res.json([{title: "Rota de login"}, {status: "🟢 Funcionando"}])
+
+    res.status(201)
 })
 
 

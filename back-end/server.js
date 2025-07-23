@@ -14,14 +14,21 @@ const corsOptions = {
 app.use(express.json()); // Configuração do CORS
 app.use(cors(corsOptions));
 
+
+
+// 🔨 ========================== ROTAS DO SISTEMA ==========================
+
+
 // Rota padrão
 app.get('/', (req, res) =>{
-    res.json([{ title: "Modelo de Marketplace"}, { content: "Codduo Developers"}])
+    res.json([{ title: "Modelo de Marketplace"}, { content: "Futura home page para um marketplace"}, {status: "🟢 Funcionando"}])
 });
 
 
 // Rotas públicas
 app.use('/', publicRoutes);
+
+
 
 // Inicialização do servidor.
 app.listen(PORT, () => {
