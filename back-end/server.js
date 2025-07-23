@@ -2,6 +2,7 @@ import express from 'express'
 import publicRoutes from './src/routes/public.js'
 import cors from 'cors'
 import dotenv from 'dotenv'
+import { prisma } from './src/database/db.js'
 
 
 const app = express();
@@ -20,7 +21,7 @@ app.use(cors(corsOptions));
 
 
 // Rota padrão
-app.get('/', (req, res) =>{
+app.get('/', async function (req, res){
     res.json([{ title: "Modelo de Marketplace"}, { content: "Futura home page para um marketplace"}, {status: "🟢 Funcionando"}])
 });
 

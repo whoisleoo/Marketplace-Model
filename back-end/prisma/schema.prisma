@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
+  output   = "generator  "
 }
 
 datasource db {
@@ -29,7 +29,6 @@ model User {
   estado          String?  @db.VarChar(2) // Abreviação de estado.
   emailVerificado Boolean  @default(false)
   criado          DateTime @default(now())
-  atualizado      DateTime @updatedAt
   status          Boolean  @default(true)
 
   @@map("users")
