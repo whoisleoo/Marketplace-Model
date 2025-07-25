@@ -28,7 +28,7 @@ app.get('/', async function (req, res){
 });
 
 //Rota de checagem de vida util
-app.get('/health', verificarDataBase)
+app.get('/health', verificarDataBase);
 
 
 // Rotas públicas
@@ -47,6 +47,5 @@ app.listen(PORT, async () => {
 🔨 Feito por CODDUO.
 💻 Acesse por: http://localhost:${PORT}`)
 
-    await verificarDataBase();
 })
 
