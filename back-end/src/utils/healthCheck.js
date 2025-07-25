@@ -2,7 +2,7 @@ import { prisma } from "../database/db.js";
 
 export async function verificarDataBase(req, res){
     try{
-        await prisma.$connect();
+        await prisma.$connect(); //Espera o prisma conectar e verifica se tá executando comando
         await prisma.$queryRaw`SELECT 1`;
         console.log('🐘 PostgreSQL conectado!');
 

@@ -56,10 +56,10 @@ router.get('/login', (req, res) =>{
 router.get('/user', async function (req, res) {
     try{ // Tenta fazer uma requisição pra lista de usuarios no banco de dados
          const users = await prisma.user.findMany();
-          res.status(200).res.json(users);
+          res.status(200).json(users);
         
     } catch (error){
-        res.status(500).json({ error: "Erro ao buscar usuários. "}); // Caso de erro, retorna o erro.
+        res.status(500).json({ error: "Erro ao buscar usuários. ", message: error.message}); // Caso de erro, retorna o erro.
     }
    
 })
@@ -76,6 +76,42 @@ router.get('/user/:id', async function (req, res) { //usar essa mesma lógica pr
         })
         res.json(users);
 })
+
+
+// Rota que atualiza os dados
+router.put('/user/:id', async function (req, res) {
+    const { id } = req.params;
+    const { nome, senha } = req.body;
+
+    const dados = prisma.user.update({
+        where: {
+            id: id,
+            nome: {nome},
+            senha: {senha}
+        }
+    })
+    res.json({status: "Updated", new_content: dados});
+})
+
+
+// rota delete de usuarios teste
+router.delete('/user/:id', async function (req, res) {
+    const { id } = req.params;
+
+    try{
+    const dados = await prisma.user.delete({
+        where: {
+            id: id
+        }
+    })
+    res.status(200).json({dados});
+}catch(error){
+    res.status(500).json({message: "Não deu certo pra deletar."})
+}
+})
+
+
+
 
 
 

@@ -1,6 +1,7 @@
 import express from 'express'
 import userRoutes from './src/routes/userRoutes.js'
 import authRoutes from './src/routes/authRoutes.js'
+import rotaTeste from './src/routes/rotaTeste.js'
 import { verificarDataBase } from './src/utils/healthCheck.js'
 import cors from 'cors'
 import dotenv from 'dotenv'
@@ -15,12 +16,11 @@ const corsOptions = {
 
 
 app.use(express.json()); 
-app.use(cors(corsOptions)); // Configuração do CORS
+app.use(cors(corsOptions));
 
 
 
 // 🔨 ========================== ROTAS DO SISTEMA ==========================
-
 
 // Rota padrão
 app.get('/', async function (req, res){
@@ -31,21 +31,26 @@ app.get('/', async function (req, res){
 app.get('/health', verificarDataBase);
 
 
-// Rotas públicas
+// Rotas públicas de usuario
 app.use('/', userRoutes);
 
-// Rotas privadas
+// Rotas teste de usuario
+app.use('/', rotaTeste);
+
+// Rotas privadas de usuario
 app.use('/auth', authRoutes);
 
 
 // Inicialização do servidor.
 app.listen(PORT, async () => {
-    console.log(`====== Back-End | Modelo Marketplace ======
+    console.log(`|====== Back-End | Modelo Marketplace ======|
 
 
 ⚙️ Servidor rodando na porta ${PORT}
 🔨 Feito por CODDUO.
-💻 Acesse por: http://localhost:${PORT}`)
+💻 Acesse por: http://localhost:${PORT}
+📅 Ativado em: ${new Date().toISOString()}
+`)
 
 })
 

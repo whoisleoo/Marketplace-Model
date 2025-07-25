@@ -6,16 +6,16 @@ function Home() {
         Bem vindo!
       </h1>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="bg-black p-6 rounded-lg shadow">
-          <h2 className="text-xl text-white font-semibold mb-4">Produtos em Destaque</h2>
+        <div className="bg-white p-6 rounded-lg shadow">
+          <h2 className="text-xl text-black font-semibold mb-4">Produtos em Destaque</h2>
             <p className="text-white">Ainda em construção...</p>
       </div>
-        <div className="bg-black p-6 rounded-lg shadow">
-        <h2 className="text-xl text-white font-semibold mb-4">Ofertas Especiais</h2>
+        <div className="bg-white p-6 rounded-lg shadow">
+        <h2 className="text-xl text-black font-semibold mb-4">Ofertas Especiais</h2>
           <p className="text-white">Ainda em construção</p>
         </div>
-        <div className="bg-black p-6 rounded-lg shadow">
-          <h2 className="text-xl text-white font-semibold mb-4">Novidades</h2>
+        <div className="bg-white p-6 rounded-lg shadow">
+          <h2 className="text-xl text-black font-semibold mb-4">Novidades</h2>
           <p className="text-white">Ainda em construção...</p>
         </div>
       </div>
