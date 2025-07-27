@@ -36,6 +36,33 @@ npx prisma migrate dev
 npx prisma generate
 ````
 
+---
+
+## Inicialização
+
+### 1. Inicialização do nodeJS
+````bash
+cd backend
+node server.js
+http://localhost:9090
+
+````
+
+
+### 2. Inicialização do React
+````bash
+cd frontend
+npm run dev
+# http://localhost:5173
+````
+
+
+### 1. Inicialização do Prisma studio
+````bash
+npx prisma studio
+# http://localhost:5555
+
+````
 
 **🚧 Projeto em desenvolvimento**
 
