@@ -57,7 +57,7 @@ npm run dev
 ````
 
 
-### 1. Inicialização do Prisma studio
+### 3. Inicialização do Prisma studio
 ````bash
 npx prisma studio
 # http://localhost:5555
