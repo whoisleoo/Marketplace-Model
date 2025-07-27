@@ -44,7 +44,7 @@ npx prisma generate
 ````bash
 cd backend
 node server.js
-http://localhost:9090
+# http://localhost:9090
 
 ````
 
