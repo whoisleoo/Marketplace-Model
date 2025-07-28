@@ -4,7 +4,7 @@ import {
     verificarToken,
     logoutUser
 }from '../controllers/authController.js'
-import { validarLogin } from '../middlewares/validation';
+import { validarLogin } from '../middlewares/validation.js';
 import { verificarAuth } from '../middlewares/authValidation.js';
 
 const router = express.Router()
