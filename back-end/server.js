@@ -19,11 +19,11 @@ app.use(cors(corsOptions));
 
 
 
-// 🔨 ========================== ROTAS DO SISTEMA ==========================
+//========================== ROTAS DO SISTEMA ==========================
 
 // Rota padrão
 app.get('/', async function (req, res){
-    res.json([{ title: "Modelo de Marketplace"}, { content: "Futura home page para um marketplace"}, {status: "🟢 Funcionando"}])
+    res.json([{ title: "Modelo de Marketplace"}, { content: "Futura home page para um marketplace lol"}, {status: "ONLINE"}])
 });
 
 //Rota de checagem de vida util
