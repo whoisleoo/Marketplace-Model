@@ -1,7 +1,6 @@
 import express from 'express'
 import userRoutes from './src/routes/userRoutes.js'
 import authRoutes from './src/routes/authRoutes.js'
-import rotaTeste from './src/routes/rotaTeste.js'
 import { verificarDataBase } from './src/utils/healthCheck.js'
 import cors from 'cors'
 import dotenv from 'dotenv'
@@ -33,9 +32,6 @@ app.get('/health', verificarDataBase);
 
 // Rotas públicas de usuario
 app.use('/', userRoutes);
-
-// Rotas teste de usuario
-app.use('/', rotaTeste);
 
 // Rotas privadas de usuario
 app.use('/auth', authRoutes);

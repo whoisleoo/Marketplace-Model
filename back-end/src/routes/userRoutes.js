@@ -13,7 +13,9 @@ const router = express.Router()
 
 // =============== ROTA DE REGISTRO =========================
 router.post('/register', validarRegistro, registrarUser);
-// =============== ROTA DE USER =========================
+// =============== ROTA DE LOGIN ===========================
+router.post('/login', loginUser)
+// =============== ROTA DE USER =============================
 router.get('/user', listarUser);
 // =============== ROTA DE PESQUISA DE USER =========================
 router.get('/user/:id', validarID, buscarUser);

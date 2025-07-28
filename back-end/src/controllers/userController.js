@@ -84,7 +84,7 @@ export const buscarUser = async function (req, res){
               endereco: true,
               telefone: true,
               criado: true,
-              status: WebTransportDatagramDuplexStream
+              status: true
 
             }
         });

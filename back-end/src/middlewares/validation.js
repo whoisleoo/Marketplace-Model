@@ -35,6 +35,15 @@ export const validarCPF = function (cpf){
 };
 
 // =============================================================================================
+//                                   VALIDAÇÃO DE EMAIL
+// =============================================================================================
+
+export const validarEmail = function (email){
+    const regex = /^[^\s]+@[^\s]+\.[^\s]+$/;
+    return regex.test(email);
+}
+
+// =============================================================================================
 //                                   MIDDLWARE DE REGISTRO
 // =============================================================================================
 
@@ -50,7 +59,7 @@ export const validarRegistro = function (req, res, next){
     if(!cpf) erros.push("CPF é obrigatório.");
 
     //Verificação e validação dos campos.
-    if(email && !email.includes('@')){ // CRIAR FUNÇÃO DE VALIDAÇÃO DE EMAIL!!!!
+    if(email && !validarEmail(email)){ // CRIAR FUNÇÃO DE VALIDAÇÃO DE EMAIL!!!!
         erros.push("Email deve ter um formato válido.");
     };
     if(senha && senha.length < 5 ){ // CRIAR VALIDAÇÃO DE SENHA MAIS ROBUSTA!!!
@@ -91,3 +100,4 @@ export const validarID = function (req, res, next){
     }
     next();
 };
+
