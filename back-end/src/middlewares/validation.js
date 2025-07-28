@@ -32,7 +32,7 @@ export const validarCPF = function (cpf){
     } else{
         return true;
     }
-}
+};
 
 // =============================================================================================
 //                                   MIDDLWARE DE REGISTRO
@@ -40,11 +40,54 @@ export const validarCPF = function (cpf){
 
 export const validarRegistro = function (req, res, next){
     const { email, senha, nome, sobrenome, cpf} = req.body;
-    const erros = [];
+    const erros = []; // Array pra armazena erro
 
+    // Verificação de existencia de campo
     if(!email) erros.push("Email é obrigatório.");
     if(!senha) erros.push("Senha é obrigatória.");
     if(!nome) erros.push("Nome é obrigatório.");
     if(!sobrenome) erros.push("Sobrenome é obrigatório.");
     if(!cpf) erros.push("CPF é obrigatório.");
+
+    //Verificação e validação dos campos.
+    if(email && !email.includes('@')){ // CRIAR FUNÇÃO DE VALIDAÇÃO DE EMAIL!!!!
+        erros.push("Email deve ter um formato válido.");
+    };
+    if(senha && senha.length < 5 ){ // CRIAR VALIDAÇÃO DE SENHA MAIS ROBUSTA!!!
+        erros.push("Senha deve ter no minimo 5 digitos.")
+    };
+    if(cpf && !validarCPF(cpf)){
+        erros.push("CPF deve ser válido.")
+    };
+    if(nome && nome.trim().length < 3){
+        erros.push("Nome deve ter pelo menos 3 digitos.")
+    };
+    if(sobrenome && sobrenome.trim().length < 2){
+        erros.push("Sobrenome deve ter pelo menos 2 digitos.")
+    };
+
+    if(erros.length > 0){
+        return res.status(400).json({
+            error: "Dados inválidos",
+            erros_encontrados: erros
+        })
+    }
+    next(); // Continua se não achar erro.
+    };
+    
+// =============================================================================================
+//                                   VALIDAÇÃO DE ID
+// =============================================================================================
+
+export const validarID = function (req, res, next){
+    const { id } = req.params;
+
+    const uuidRegex =  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i; // formato do prisma pra regex
+
+    if(!uuidRegex.test(id)){
+        return res.status(400).json({
+            error: "ID deve ser um UUID válido."
+        });
+    }
+    next();
 };

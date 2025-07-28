@@ -1,10 +1,11 @@
-import { Prisma } from "@prisma/client";
+import { prisma } from "../database/db.js";
 import bcrypt from 'bcrypt'
 
 // ====================================================================================================
 //                                      ROTA DE REGISTRO
 // ====================================================================================================
-router.post('/register', async (req, res) => {
+
+  export const registrarUser = async function (req, res){
     const { email, senha, nome, sobrenome, cpf} = req.body; // Pega todas as informações do body raw
     
     try{
@@ -37,7 +38,7 @@ router.post('/register', async (req, res) => {
     res.status(500).json({error: "Erro interno no servidor."});
 }
     
-})
+}
 // ====================================================================================================
 //                                    ROTA DE LISTAGEM DE USUARIO
 // ====================================================================================================
@@ -45,11 +46,15 @@ router.post('/register', async (req, res) => {
 export const listarUser = async function (req, res){
     try{ // Tenta fazer uma requisição pra lista de usuarios no banco de dados
          const users = await prisma.user.findMany({
-          id: 1,
-          email: 1,
-          nome: 1,
-          sobrenome: 1,
-          role: 1
+          select: {
+          id: true,
+          email: true,
+          nome: true,
+          sobrenome: true,
+          role: true,
+          criado: true,
+          status: true
+          }
          });
           res.status(200).json(users);
         
@@ -70,14 +75,16 @@ export const buscarUser = async function (req, res){
         const users = await prisma.user.findUnique({ //findFirst é o primeiro a ser achado
             where: { id },
             select: {
-              id: 1,
-              email: 1,
-              nome: 1,
-              sobrenome: 1,
-              role: 1,
-              cpf: 1,
-              endereco: 1,
-              telefone: 1
+              id: true,
+              email: true,
+              nome: true,
+              sobrenome: true,
+              role: true,
+              cpf: true,
+              endereco: true,
+              telefone: true,
+              criado: true,
+              status: WebTransportDatagramDuplexStream
 
             }
         });
@@ -85,9 +92,9 @@ export const buscarUser = async function (req, res){
         if(!users){
           res.status(404).json({error: "Usuário não encontrado."}) // Pra não retornar null.
         }
-        res.status(200).json({message: `Usuario encontrado: ${users}`});
+        res.status(200).json({message: "Usuario encontrado com sucesso", user: users});
       }catch(error){
-        res.status(500).json({error: `Erro interno do servidor. ${error.message}`});
+        res.status(500).json({error: "Erro interno doservidor", erro_encontrado: error.message});
       }
 }
 
@@ -106,7 +113,7 @@ export const deleteUser = async function (req, res){
     });
 
     if(!dados){
-      res.status(404).json({error: "Usuário não encontrado."})
+      return res.status(404).json({error: "Usuário não encontrado."})
     }
 
     await prisma.user.update({ // Ao inves de dar delete só da um update pra desativar a conta.
@@ -115,7 +122,7 @@ export const deleteUser = async function (req, res){
     });
 
 
-    res.status(200).json({message: `Usuário  ${dados.nome} desativado com sucesso.`});
+    res.status(200).json({message: "Usuario desativado com sucesso", user: dados.nome});
 }catch(error){
     res.status(500).json({message: "Erro interno do servidor. ", error: error.message})
   }
