@@ -2,6 +2,8 @@
 //                                   VALIDAÇÃO DE CPF
 // =============================================================================================
 
+import { decode } from "jsonwebtoken";
+
 export const validarCPF = function (cpf){
     cpf = cpf.replace(/\D/g, '') // Remove a pontuação e traços do CPF via regex
 
@@ -83,7 +85,36 @@ export const validarRegistro = function (req, res, next){
     }
     next(); // Continua se não achar erro.
     };
-    
+
+
+// =============================================================================================
+//                                   MIDDLWARE DE LOGIJN
+// =============================================================================================   
+
+export const validarLogin = function (req, res, next){
+    const { email, senha } = req.body;
+    const erros = [];
+
+    if(!email) erros.push("Email é obrigatório.");
+    if(!senha) erros.push("Senha é obrigatória.");
+
+    if(email && !validarEmail(email)){
+        erros.push("Email fornecido está incorreto.");
+    }
+
+    if(senha && senha.length < 3){
+        erros.push("Sua senha deve ter pelo menos 3 caracteres.")
+    }
+
+    if(erros.length > 0){
+        return res.status(400).json({
+            error: "Dados inválidos",
+            erro_encontrado: erros
+        })
+    }
+    next();
+};
+
 // =============================================================================================
 //                                   VALIDAÇÃO DE ID
 // =============================================================================================
@@ -100,4 +131,3 @@ export const validarID = function (req, res, next){
     }
     next();
 };
-

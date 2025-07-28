@@ -121,5 +121,13 @@ export const verificarToken = async function (req, res){ // Usada para verifica�
 }
 
 // ====================================================================================================
-//                                      VERIFICAÇÃO DE TOKEN
+//                                       LOGOUT DE USUARIO
 // ====================================================================================================
+
+export const logoutUser = async function (req, res){
+    // processo vai ser realizado pelo frontend
+
+    res.status(200).json({
+        message: "Logout realizado com sucesso."
+    });
+}
