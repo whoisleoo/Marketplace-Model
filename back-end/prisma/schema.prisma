@@ -13,6 +13,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+//=========================================================================================
+//                                    USUARIO
+//=========================================================================================
+
 model User {
   id              String   @id @default(uuid()) // Comando padrão pra geração de ID em string aleatorio
   email           String   @unique
@@ -30,10 +34,123 @@ model User {
   criado          DateTime @default(now())
   status          Boolean  @default(true)
 
+  carrinho CartItem[]
+  pedidos  Order[]
+
   @@map("users")
 }
+
+//=========================================================================================
+//                                    PRODUTO
+//=========================================================================================
+
+model Product {
+  id         String   @id @default(uuid())
+  nome       String
+  descricao  String?
+  preco      Decimal  @db.Decimal(10, 2)
+  categoria  Category
+  estoque    Int      @default(0)
+  imagem     String?
+  peso       Decimal? @db.Decimal(8, 3)
+  atualizado DateTime @updatedAt
+  criado     DateTime @default(now())
+  status     Boolean  @default(true)
+
+  carrinho    CartItem[]
+  pedidoItens OrderItem[]
+
+  @@map("products")
+}
+
+//=========================================================================================
+//                                    CARRINHO
+//=========================================================================================
+
+model CartItem {
+  id        String @id @default(uuid())
+  usuarioId String
+  usuario   User   @relation(fields: [usuarioId], references: [id], onDelete: Cascade) // Cria uma relação com o ID do usuario
+
+  produtoId String
+  produto   Product @relation(fields: [produtoId], references: [id], onDelete: Cascade)
+
+  quantidade Int      @default(1)
+  criado     DateTime @default(now())
+
+  @@unique([usuarioId, produtoId])
+  @@map("cart_items")
+}
+
+//=========================================================================================
+//                                    PEDIDO
+//=========================================================================================
+
+model Order {
+  id     String @id @default(uuid())
+  numero String @unique @default(cuid())
+
+  usuarioId String
+  usuario   User   @relation(fields: [usuarioId], references: [id])
+
+  subtotal        Decimal     @db.Decimal(10, 2)
+  frete           Decimal     @default(0) @db.Decimal(10, 2)
+  desconto        Decimal     @default(0) @db.Decimal(10, 2)
+  total           Decimal     @db.Decimal(10, 2)
+  status          orderStatus @default(PENDENTE)
+  criado          DateTime    @default(now())
+  atualizado      DateTime    @updatedAt
+  enderecoEntrega String
+  cidadeEntrega   String
+  cepEntrega      String      @db.VarChar(9)
+  estadoEntrega   String      @db.VarChar(2)
+  complemento     String?
+  telefoneEntrega String
+
+  itens OrderItem[]
+
+  @@map("orders")
+}
+
+//=========================================================================================
+//                                    ITEM DO PEDIDO
+//=========================================================================================
+
+model OrderItem {
+  id        String  @id @default(uuid())
+  pedidoId  String
+  pedido    Order   @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
+  produtoId String
+  produto   Product @relation(fields: [produtoId], references: [id])
+
+  nomeProduto  String
+  precoProduto Decimal @db.Decimal(10, 2)
+  quantidade   Int
+  subtotal     Decimal @db.Decimal(10, 2)
+
+  @@map("order_items")
+}
+
+//=========================================================================================
+//                                    ENUMS
+//=========================================================================================
 
 enum Role {
   ADMIN
   CUSTOMER
+}
+
+enum Category {
+  CAMISAS
+  ACESSORIOS
+  CALCADOS
+  CHAPEUS
+}
+
+enum orderStatus {
+  PENDENTE
+  CONFIRMADO
+  ENVIADO
+  ENTREGUE
+  CANCELADO
 }

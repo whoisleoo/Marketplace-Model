@@ -5,18 +5,21 @@ import { verificarDataBase } from './src/utils/healthCheck.js'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import { prisma } from './src/database/db.js'
-
+import { security, logSeguranca } from './src/middlewares/security.js'
+import { generalLimiter } from './src/middlewares/rateLimit.js'
 
 const app = express();
 const PORT = process.env.PORT || 9090; //Usa ou a porta do .env ou a porta 3000
 const corsOptions = {
-    origin: ["http://localhost:5173"]
+    origin: ["http://localhost:5173"],
 }
 
 
 app.use(express.json()); 
 app.use(cors(corsOptions));
-
+app.use(security);
+app.use(generalLimiter);
+app.use(logSeguranca);
 
 
 //========================== ROTAS DO SISTEMA ==========================
@@ -35,6 +38,7 @@ app.use('/', userRoutes);
 
 // Rotas privadas de usuario
 app.use('/auth', authRoutes);
+
 
 
 // Inicialização do servidor.

@@ -64,9 +64,9 @@ export const logSeguranca = function (req, res, next){
     ] 
 
     const fullUrl = req.url.toLowerCase(); // puxar o link do website
-    const body = JSON.stringify(req.body.toLowerCase()); // puxar o body raw em json
+    const body = JSON.stringify(req.body || {}).toLowerCase(); // puxar o body raw em json
 
-    const ataque = padraoAtaque.some(pattern => fullUrl.includes(pattern.toLowerCase()) || body.includes(pattern.toLowerCase)); // retorna true ou false se achar um dos padrões de ataque no body ou na url
+    const ataque = padraoAtaque.some(pattern => fullUrl.includes(pattern.toLowerCase()) || body.includes(pattern.toLowerCase())); // retorna true ou false se achar um dos padrões de ataque no body ou na url
 
 
     if(ataque){
@@ -90,6 +90,3 @@ export const logSeguranca = function (req, res, next){
     next();
 }
 
-//=============================================================================
-//
-//=============================================================================
