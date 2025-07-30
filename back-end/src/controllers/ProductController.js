@@ -57,7 +57,7 @@ export const criarProduto = async function(req, res) {
 export const listarProdutos = async function (req, res){
     try{
         const {
-            cateoria,
+            categoria,
             search,
             minPreco,
             maxPreco,
@@ -82,7 +82,7 @@ export const listarProdutos = async function (req, res){
         if(search){
             where.OR = [
                 { nome: { contains: search, mode: 'insensitive'} }, // Procura ou pelo nome ou pela descrição e é case sensitive
-                { descricao: { contains: search, mode: 'insensitive '} }
+                { descricao: { contains: search, mode: 'insensitive'} }
             ]
         }
 
@@ -108,7 +108,8 @@ export const listarProdutos = async function (req, res){
                 orderBy: { [orderBy]: order },
                 skip,
                 take: limitNum
-            })
+            }),
+            prisma.product.count({ where })
         ])
 
         res.status(200).json({ //retorna os produto
@@ -165,7 +166,7 @@ export const buscarProduto = async function (req, res){
                 error: "Produto não disponivel."
             })
         }
-        res.status(200).json({message: "Produto encontrado com sucesso", produto: product});
+        res.status(200).json({message: "Produto encontrado com sucesso", produto: produto});
       }catch(error){
         res.status(500).json({error: "Erro interno doservidor", erro_encontrado: error.message});
       }
@@ -181,23 +182,23 @@ export const updateProduto = async function (req, res){
         const { nome, descricao, preco, categoria, estoque, imagem, peso } = req.body
     try{
       const produto = await prisma.product.findUnique({
-        where: id
+        where: { id }
       })
 
       if(!produto){
-        res.status(404).json({
+        return res.status(404).json({
             error: "Esse produto não existe."
         })
       }
 
       if(preco <= 0){
-        res.status(404).json({
+        return res.status(404).json({
             error: "O preço do produto deve ser maior que zero."
         })
       }
 
       if(estoque < 0){
-        res.status(404).json({
+        return res.status(404).json({
             error: "O estoque não pode ter um número negativo."
         })
       }
@@ -207,7 +208,7 @@ export const updateProduto = async function (req, res){
       if(descricao !== undefined) dadoAtualizado.descricao = descricao.trim(); 
       if(preco) dadoAtualizado.preco = parseFloat(preco);
       if(categoria) dadoAtualizado.categoria = categoria;
-      if(estoque !== undefined) dadoAtualizado.estoque = parseInt(estoque);
+      if(estoque !== undefined) dadoAtualizado.estoque = parseInt(estoque) || 0;
       if(imagem !== undefined) dadoAtualizado.imagem = imagem?.trim();
       if(peso !== undefined) dadoAtualizado.peso = peso ? parseFloat(peso) : null;
 
@@ -231,4 +232,41 @@ export const updateProduto = async function (req, res){
             message: error.message
         })
     }
+}
+
+
+//=================================================================
+//                     DELETAR UM PRODUTO
+//=================================================================
+
+export const deleteProduto = async function (req, res){
+    const { id } = req.params;
+    try{
+        const produto = await prisma.product.findUnique({
+            where: { id }
+        })
+
+        if(!produto){
+            return res.status(404).json({
+                error: "Esse produto não existe."
+            })
+        }
+
+        await prisma.product.update({
+            where: { id },
+            data: { status: false} 
+        });
+
+        res.status(200).json({
+            message: "Produto removido com sucesso."
+        })
+
+
+    }catch(error){
+        res.status(500).json({
+            error: "Erro interno do servidor.",
+            message: error.message
+        });
+    }
+
 }
