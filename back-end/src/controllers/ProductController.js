@@ -170,3 +170,65 @@ export const buscarProduto = async function (req, res){
         res.status(500).json({error: "Erro interno doservidor", erro_encontrado: error.message});
       }
 }
+
+//=================================================================
+//                     ATUALIZAR PRODUTO
+//=================================================================
+
+
+export const updateProduto = async function (req, res){
+     const { id } = req.params;
+        const { nome, descricao, preco, categoria, estoque, imagem, peso } = req.body
+    try{
+      const produto = await prisma.product.findUnique({
+        where: id
+      })
+
+      if(!produto){
+        res.status(404).json({
+            error: "Esse produto não existe."
+        })
+      }
+
+      if(preco <= 0){
+        res.status(404).json({
+            error: "O preço do produto deve ser maior que zero."
+        })
+      }
+
+      if(estoque < 0){
+        res.status(404).json({
+            error: "O estoque não pode ter um número negativo."
+        })
+      }
+
+      const dadoAtualizado = {};
+      if(nome) dadoAtualizado.nome = nome.trim();
+      if(descricao !== undefined) dadoAtualizado.descricao = descricao.trim(); 
+      if(preco) dadoAtualizado.preco = parseFloat(preco);
+      if(categoria) dadoAtualizado.categoria = categoria;
+      if(estoque !== undefined) dadoAtualizado.estoque = parseInt(estoque);
+      if(imagem !== undefined) dadoAtualizado.imagem = imagem?.trim();
+      if(peso !== undefined) dadoAtualizado.peso = peso ? parseFloat(peso) : null;
+
+
+      const produtoAtualizado = await prisma.product.update({
+        where: { id },
+        data: dadoAtualizado
+      })
+
+
+      res.status(200).json({
+        message: "Produto atualizado com sucesso!",
+        produto: produtoAtualizado
+      })
+      
+
+    }catch(error){
+
+        res.status(500).json({
+            error: "Erro interno do servidor.",
+            message: error.message
+        })
+    }
+}
