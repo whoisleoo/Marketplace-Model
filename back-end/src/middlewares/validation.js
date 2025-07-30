@@ -2,6 +2,7 @@
 //                                   VALIDAÇÃO DE CPF
 // =============================================================================================
 
+import { parse } from "dotenv";
 import { decode } from "jsonwebtoken";
 
 export const validarCPF = function (cpf){
@@ -131,3 +132,41 @@ export const validarID = function (req, res, next){
     }
     next();
 };
+
+
+
+// =============================================================================================
+//                                   VALIDAÇÃO DE PRODUTO
+// =============================================================================================
+
+
+export const validarProduto = function (req, res, next){
+    const { nome, preco, categoria, estoque } = req.body;
+    const erros = []; // Array pra armazena erro
+
+    
+    if(!nome) erros.push("Nome do produto é obrigatório.");
+    if(!preco) erros.push("Preço do produto é obrigatória.");
+    if(!categoria) erros.push("Categoria do produto é obrigatório.");
+    if(!estoque) erros.push("Número de estoque é obrigatório.");
+
+
+   if(nome && nome.trim().length < 3){
+    erros.push("O nome do produto precisa ter no mínimo 3 caracteres.")
+   }
+   if(preco && isNaN(preco) || parseFloat(preco) <= 0 ){
+    erros.push("O preço deve ser maior que zero.");
+   }
+
+   if(estoque && isNaN(estoque) || parseInt(estoque) < 0){
+    erros.push("O número do estoque não pode ser negativo.")
+   }
+
+    if(erros.length > 0){
+        return res.status(400).json({
+            error: "Dados inválidos",
+            erros_encontrados: erros
+        })
+    }
+    next(); // Continua se não achar erro.
+    };
