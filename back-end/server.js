@@ -1,6 +1,8 @@
 import express from 'express'
 import userRoutes from './src/routes/userRoutes.js'
 import authRoutes from './src/routes/authRoutes.js'
+import productRoutes from './src/routes/productRoutes.js' 
+import cartRoutes from './src/routes/cartRoutes.js'  
 import { verificarDataBase } from './src/utils/healthCheck.js'
 import cors from 'cors'
 import dotenv from 'dotenv'
@@ -39,6 +41,12 @@ app.use('/', userRoutes);
 // Rotas privadas de usuario
 app.use('/auth', authRoutes);
 
+// Rota de produtos
+app.use('/', productRoutes);
+
+// Rota do carrinho
+app.use('/', cartRoutes);
+
 
 
 // Inicialização do servidor.
@@ -50,6 +58,8 @@ app.listen(PORT, async () => {
 🔨 Feito por CODDUO.
 💻 Acesse por: http://localhost:${PORT}
 📅 Ativado em: ${new Date().toISOString()}
+
+|================================|
 `)
 
 })
