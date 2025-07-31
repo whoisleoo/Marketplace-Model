@@ -182,7 +182,7 @@ export const limparCarrinho = async function (req, res){
 export const updateCarrinho = async function (req, res){
     const { id } = req.params;
     const { quantidade } = req.body;
-    const { usuarioId } = req.user.id;
+    const usuarioId = req.user.id;
 
 
     try{
@@ -212,19 +212,19 @@ export const updateCarrinho = async function (req, res){
             })
         }
 
-        if(cart.product.status == false){
+        if(cart.produto.status == false){
             return res.status(400).json({
                 error: "Esse produto está desativado."
             })
         }
 
-        if(cart.product.estoque < quantidade){ 
+        if(cart.produto.estoque < quantidade){ 
             return res.status(400).json({
                 error: "O estoque não pode ser um número negativo."
             })
         }
 
-        const atualizado = await prisma.product.update({
+        const atualizado = await prisma.cartItem.update({
             where: { id: id },
             data: {quantidade: quantidade},
             include: {
@@ -261,12 +261,11 @@ export const updateCarrinho = async function (req, res){
 //===========================================================================================
 
 export const verCarrinho = async function (req, res){
-    const { id } = req.params;
-    const { usuarioId } = req.user.id;
+        const usuarioId = req.user.id;
 
     try{
         const carrinho = await prisma.cartItem.findMany({
-            where: { id, usuarioId: usuarioId},
+            where: { usuarioId: usuarioId},
             include: {
                 produto: {
                     select: {
@@ -274,7 +273,8 @@ export const verCarrinho = async function (req, res){
                         nome: true,
                         imagem: true,
                         preco: true,
-                        estoque: true
+                        estoque: true,
+                        status: true
                     }
                 }
             },
@@ -286,7 +286,7 @@ export const verCarrinho = async function (req, res){
         let itensCompraveis = [];
 
         for(const item of carrinho){ // in é pra objetivos, of é pra array
-            if(item.produto.status && item.product.estoque >= item.quantidade){
+            if(item.produto.status && item.produto.estoque >= item.quantidade){
                 const subtotalItem = item.quantidade * parseFloat(item.produto.preco)
                 subtotal += subtotalItem;
 
@@ -294,10 +294,12 @@ export const verCarrinho = async function (req, res){
                     ...item, //desestrutura e já copia todos os campo de uma vez
                     subtotalItem: subtotalItem.toFixed(2) // adiciona um novo campo na array pra fixar pra 2 casa decimal
                 })
+                
+                }
             }
-        }
 
-        let quantidade = 0; //loopzinho pra puxar a quantidade total de produtos
+
+            let quantidade = 0; //loopzinho pra puxar a quantidade total de produtos
         for(let i = 0; i < itensCompraveis.length; i++){
             const item = itensCompraveis[i];
             quantidade += item.quantidade;

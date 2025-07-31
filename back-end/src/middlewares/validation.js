@@ -192,4 +192,5 @@ export const validarCarrinho = function (req, res, next){
                 problemas: erros
             })
         }
+        next();
 }  

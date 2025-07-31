@@ -24,7 +24,7 @@ export const criarProduto = async function(req, res) {
         const newProduto = await prisma.product.create({ //Função que cria o produto e formata a data
             data: {
                 nome: nome.trim(),
-                descricao: descricao.trim(),
+                descricao: descricao?.trim(),
                 preco: parseFloat(preco),
                 categoria: categoria,
                 estoque: parseInt(estoque) || 0,
