@@ -195,7 +195,7 @@ export const updateCarrinho = async function (req, res){
         const cart = await prisma.cartItem.findFirst({
             where: { id, usuarioId: usuarioId },
                 include: {
-                    product: {
+                    produto: {
                         select: {
                             nome: true,
                             quantidade: true,
@@ -228,7 +228,7 @@ export const updateCarrinho = async function (req, res){
             where: { id: id },
             data: {quantidade: quantidade},
             include: {
-                product: {
+                produto: {
                     select: {
                         nome: true,
                         quantidade: true,
@@ -253,4 +253,71 @@ export const updateCarrinho = async function (req, res){
         })
 
     }
+}
+
+
+//===========================================================================================
+//                              VER O CARRINHO
+//===========================================================================================
+
+export const verCarrinho = async function (req, res){
+    const { id } = req.params;
+    const { usuarioId } = req.user.id;
+
+    try{
+        const carrinho = await prisma.cartItem.findMany({
+            where: { id, usuarioId: usuarioId},
+            include: {
+                produto: {
+                    select: {
+                        id: true,
+                        nome: true,
+                        imagem: true,
+                        preco: true,
+                        estoque: true
+                    }
+                }
+            },
+            orderBy: { criado: 'asc'} // mais antigo pra mais novo | desc = mais novo pro mais antigo
+        })
+
+
+        let subtotal = 0;
+        let itensCompraveis = [];
+
+        for(const item of carrinho){ // in é pra objetivos, of é pra array
+            if(item.produto.status && item.product.estoque >= item.quantidade){
+                const subtotalItem = item.quantidade * parseFloat(item.produto.preco)
+                subtotal += subtotalItem;
+
+                itensCompraveis.push({
+                    ...item, //desestrutura e já copia todos os campo de uma vez
+                    subtotalItem: subtotalItem.toFixed(2) // adiciona um novo campo na array pra fixar pra 2 casa decimal
+                })
+            }
+        }
+
+        let quantidade = 0; //loopzinho pra puxar a quantidade total de produtos
+        for(let i = 0; i < itensCompraveis.length; i++){
+            const item = itensCompraveis[i];
+            quantidade += item.quantidade;
+        }
+
+        res.status(200).json({
+            itens: itensCompraveis,
+            lista: {
+                itensDisponiveis: itensCompraveis.length,
+                quantidadeTotal: quantidade,
+                subtotal: subtotal.toFixed(2)
+            }
+        })
+
+
+    }catch(error){
+        res.status(500).json({
+            error: "Erro interno do servidor.",
+            message: error.message
+        })
+    }
+
 }
