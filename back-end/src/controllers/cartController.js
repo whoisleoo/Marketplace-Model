@@ -129,7 +129,7 @@ export const removerProduto = async function (req, res){
 
 
         if(!item){
-            res.status(400).json({
+          return  res.status(400).json({
                 error: "Esse item não está no seu carrinho."
             })
         }
@@ -158,7 +158,7 @@ export const limparCarrinho = async function (req, res){
     const usuarioId = req.user.id;
 
     try{
-        const cart = await requestAnimationFrame.cartItem.deleteMany({
+        const cart = await prisma.cartItem.deleteMany({ // DELETA TUDO que tá relcionado ao id do usuario
             where: { usuarioId }
         });
 
@@ -173,4 +173,84 @@ export const limparCarrinho = async function (req, res){
         message: error.message
     })
 }
+}
+
+//===========================================================================================
+//                              ATUALIZAR O CARRINHO
+//===========================================================================================
+
+export const updateCarrinho = async function (req, res){
+    const { id } = req.params;
+    const { quantidade } = req.body;
+    const { usuarioId } = req.user.id;
+
+
+    try{
+        if(quantidade <= 0){
+           return res.status(400).json({
+                error: "Quantidade informada é inválida."
+            })
+        }
+
+        const cart = await prisma.cartItem.findFirst({
+            where: { id, usuarioId: usuarioId },
+                include: {
+                    product: {
+                        select: {
+                            nome: true,
+                            quantidade: true,
+                            estoque: true
+                        }
+                    }
+                }
+        });
+
+
+        if(!cart){
+           return res.status(400).json({
+                error: "Esse produto não existe."
+            })
+        }
+
+        if(cart.product.status == false){
+            return res.status(400).json({
+                error: "Esse produto está desativado."
+            })
+        }
+
+        if(cart.product.estoque < quantidade){ 
+            return res.status(400).json({
+                error: "O estoque não pode ser um número negativo."
+            })
+        }
+
+        const atualizado = await prisma.product.update({
+            where: { id: id },
+            data: {quantidade: quantidade},
+            include: {
+                product: {
+                    select: {
+                        nome: true,
+                        quantidade: true,
+                        estoque: true,
+                        imagem: true
+                    }
+                }
+            }
+        })
+
+
+        res.status(200).json({
+            message: "Carrinho atualizado com sucesso.",
+            item: atualizado
+        })
+
+
+    }catch(error){
+        res.status(500).json({
+            error: "Erro interno do servidor.",
+            message: error.message
+        })
+
+    }
 }
