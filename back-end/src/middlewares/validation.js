@@ -168,5 +168,28 @@ export const validarProduto = function (req, res, next){
             erros_encontrados: erros
         })
     }
-    next(); // Continua se não achar erro.
+    next(); 
     };
+
+
+    // =============================================================================================
+//                                   VALIDAÇÃO Do CARRINHO
+// =============================================================================================
+
+export const validarCarrinho = function (req, res, next){
+        const { produtoId, quantidade } = req.body;
+        const erros = [];
+
+        if (!produtoId) erros.push("ID do produto não especificado.");
+        if(quantidade && (isNaN(quantidade)) || parseInt(quantidade) <= 0){
+            erros.push("Quantidade não pode ser um número negativo.")
+        };
+
+
+        if(erros.length > 0){
+            return res.status(400).json({
+                error: "Dados invalidos",
+                problemas: erros
+            })
+        }
+}  
