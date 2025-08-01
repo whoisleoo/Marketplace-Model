@@ -1,21 +1,46 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
-
+import api from '../services/api.js';
 
 function Login() {
+const inputEmail = useRef();
+const inputPass = useRef();
+const [loading, setLoading] = useState(false);
+const [message, setMessage] = useState(null);
+const [messageType, setMessageType] = useState(null);
 
-    const [loading, setLoading ] = useState(false);
+const handleLogin = async function (e){
+    e.preventDefault();
+    setLoading(true);
+    setMessage(null);
 
-    const handleSubmit = (pagina) =>{
-     pagina.preventDefault();
 
-        setLoading(true);
+   try{ 
+    await api.post('/auth/login', {
+        email: inputEmail.current.value,
+        senha: inputPass.current.value
+    })
 
-        setTimeout(() => {
-            setLoading(false);
-            alert('Teste de login.')
-        }, 2000);
-  }
+    setMessage("Login realizado com sucesso!");
+    setMessageType("success");
+    console.log("Login bem-sucedido");
+
+    window.location.href = 'http://localhost:5173/'; // vai pro home
+
+}catch(error){
+       const errorMsg =  error.response?.data?.error || // Pega o erro da resposta
+         error.response?.data?.message ||  // Pega a mensagem da resposta
+        "Erro ao tentar fazer login."; // Caso nenhuma seja favoravel retorna isso
+
+        setMessage(errorMsg); // bota no usestate a mensagem do erro
+        setMessageType("error"); 
+    console.log("VOCE NAO LOGOU POR CAUSA DISSO: " + error);
+}finally{
+    setLoading(false)
+}
+}
+
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -32,7 +57,12 @@ function Login() {
                     </p>
                 </div>
 
-                <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+                <form className="mt-8 space-y-6" onSubmit={handleLogin}>
+                      {message && (
+        <div className={`text-sm text-center font-medium ${messageType === 'error' ? 'text-red-600' : 'text-green-600'}`}> 
+            {message}
+        </div>
+    )}
                     <div className="space-y-4">
                      <div>
                             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
@@ -43,6 +73,7 @@ function Login() {
                                type="email"
                                 className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                                 placeholder="Digite seu email"
+                                ref={inputEmail}
                            />
                         </div>
 
@@ -57,6 +88,7 @@ function Login() {
                                 required
                                 className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                                 placeholder="Digite sua senha"
+                                ref={inputPass}
                             />
                     </div>
                     </div>
@@ -80,6 +112,8 @@ function Login() {
                     </Link>
                     </div>
              </div>
+
+
 
                     <div>
                       <button
