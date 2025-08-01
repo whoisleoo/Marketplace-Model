@@ -1,21 +1,50 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
-
+import api from '../services/api.js';
 
 function Register() {
+const inputEmail = useRef();
+const inputPass = useRef();
+const inputName = useRef();
+const inputSobrenome = useRef();
+const inputCpf = useRef();
+const [loading, setLoading] = useState(false);
+const [message, setMessage] = useState(null);
+const [messageType, setMessageType] = useState(null);
 
-    const [loading, setLoading ] = useState(false);
+const HandleRegister = async function (e){
+    e.preventDefault();
+    setLoading(true);
+    setMessage(null);
 
-    const handleSubmit = (pagina) =>{
-     pagina.preventDefault();
 
-        setLoading(true);
+   try{ 
+    await api.post('/register', {
+        email: inputEmail.current.value,
+        senha: inputPass.current.value,
+        nome: inputName.current.value,
+        sobrenome: inputSobrenome.current.value,
+        cpf: inputCpf.current.value
+    })
 
-        setTimeout(() => {
-            setLoading(false);
-            alert('Teste de login.')
-        }, 2000);
-  }
+    setMessage("Registro realizado com sucesso!");
+    setMessageType("success");
+    console.log("Registro bem-sucedido");
+
+    window.location.href = 'http://localhost:5173/login'; // vai pro login
+
+}catch(error){
+       const errorMsg =  error.response?.data?.error || // Pega o erro da resposta
+         error.response?.data?.message ||  // Pega a mensagem da resposta
+        "Erro ao tentar fazer o registro."; // Caso nenhuma seja favoravel retorna isso
+
+        setMessage(errorMsg); // bota no usestate a mensagem do erro
+        setMessageType("error"); 
+    console.log("VOCE NAO REGISTROU POR CAUSA DISSO: " + error);
+}finally{
+    setLoading(false)
+}
+}
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -32,7 +61,12 @@ function Register() {
                     </p>
                 </div>
 
-                <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+                <form className="mt-8 space-y-6" onSubmit={HandleRegister}>
+                    {message && (
+        <div className={`text-sm text-center font-medium ${messageType === 'error' ? 'text-red-600' : 'text-green-600'}`}> 
+            {message}
+        </div>
+    )}
                     <div className="space-y-4">
                      <div>
                             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
@@ -43,6 +77,7 @@ function Register() {
                                type="email"
                                 className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                                 placeholder="Digite seu email"
+                                ref={inputEmail}
                            />
                         </div>
 
@@ -55,10 +90,11 @@ function Register() {
                             <input
                                 id="senha"
                                 name="senha"
-                             type="password"
+                             type="text"
                                 required
                                 className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                                 placeholder="Digite seu nome"
+                                  ref={inputName}
                             />
 
                             
@@ -69,10 +105,11 @@ function Register() {
                             <input
                                 id="senha"
                                 name="senha"
-                             type="password"
+                             type="text"
                                 required
                                 className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                                 placeholder="Digite seu sobrenome"
+                                  ref={inputSobrenome}
                             />
 
 
@@ -85,10 +122,11 @@ function Register() {
                             <input
                                 id="senha"
                                 name="senha"
-                             type="password"
+                             type="text"
                                 required
                                 className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                                 placeholder="Digite seu CPF"
+                                  ref={inputCpf}
                             /></div>
                         
                             
@@ -111,6 +149,7 @@ function Register() {
                                 required
                                 className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                                 placeholder="Digite sua senha"
+                                  ref={inputPass}
                             />
                     </div>
                     </div>
